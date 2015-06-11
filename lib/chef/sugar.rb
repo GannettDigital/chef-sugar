@@ -1,5 +1,5 @@
 #
-# Copyright 2013-2014, Seth Vargo <sethvargo@gmail.com>
+# Copyright 2013-2015, Seth Vargo <sethvargo@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ class Chef
 end
 
 Chef::Recipe.send(:include, Chef::Sugar::DSL)
+Chef::Recipe.send(:include, Chef::Sugar::RecipeDSL) # TODO: this is a hack
 Chef::Resource.send(:include, Chef::Sugar::DSL)
 Chef::Provider.send(:include, Chef::Sugar::DSL)
 

@@ -1,5 +1,5 @@
 #
-# Copyright 2013-2014, Seth Vargo <sethvargo@gmail.com>
+# Copyright 2013-2015, Seth Vargo <sethvargo@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -39,6 +39,13 @@ class Chef
           'mavericks'     => '10.9',
           'yosemite'      => '10.10',
         },
+        'solaris' => {
+          '7'  => '5.7',
+          '8'  => '5.8',
+          '9'  => '5.9',
+          '10' => '5.10',
+          '11' => '5.11',
+        },
         'ubuntu' => {
           'lucid'    => '10.04',
           'maverick' => '10.10',
@@ -74,8 +81,9 @@ class Chef
               check  = node['platform_version'].split('.')[0...length].join('.')
 
               # Calling #to_f will ensure we only check major versions since
-              # '10.04.4'.to_f #=> 10.04.
-              node['platform'] == platform && block.call(check.to_f, version.to_f)
+              # '10.04.4'.to_f #=> 10.04. We also use a regex to match on
+              # platform so things like `solaris2` match on `solaris`.
+              node['platform'] =~ %r(^#{platform}) && block.call(check.to_f, version.to_f)
             end
           end
         end
@@ -159,7 +167,7 @@ class Chef
       # @return [Boolean]
       #
       def redhat_enterprise_linux?(node)
-        node['platform'] == 'enterprise'
+        node['platform'] == 'redhat'
       end
       alias_method :redhat_enterprise?, :redhat_enterprise_linux?
 

@@ -47,7 +47,13 @@ describe Chef::Node do
     it 'raises an error if a key does not exist' do
       expect {
         node.deep_fetch!(:apache2, :not_real)
-      }.to raise_error(Chef::Node::AttributeDoesNotExistError)
+      }.to raise_error(Chef::Node::AttributeDoesNotExistError) { |e|
+        expect(e.message).to eq(<<-EOH.gsub(/^ {10}/, ''))
+          No attribute `node['apache2']['not_real']' exists on
+          the current node. Specifically the `not_real' attribute is not
+          defined. Please make sure you have spelled everything correctly.
+        EOH
+      }
     end
   end
 
@@ -96,6 +102,48 @@ describe Chef::Node do
       expect(node.override).to eq({
         'apache2' => {
           'config' => { 'root' => '/var/www' }
+        }
+      })
+    end
+
+    it 'maintains precedence level into nested calls' do
+      node.instance_eval do
+        namespace 'apache2', precedence: override do
+          namespace 'config' do
+            root '/var/www'
+          end
+        end
+      end
+
+      expect(node.override).to eq({
+        'apache2' => {
+          'config' => { 'root' => '/var/www' }
+        }
+      })
+    end
+
+    it 'resets precedence to default in subsequent non-nested calls' do
+      node.instance_eval do
+        namespace 'apache2', precedence: override do
+          namespace 'config' do
+            root '/var/www'
+          end
+        end
+
+        namespace 'php' do
+          version '5.3'
+        end
+      end
+
+      expect(node.override).to eq({
+        'apache2' => {
+          'config' => { 'root' => '/var/www' }
+        }
+      })
+
+      expect(node.default).to eq({
+        'php' => {
+          'version' => '5.3'
         }
       })
     end

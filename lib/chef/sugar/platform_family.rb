@@ -1,5 +1,5 @@
 #
-# Copyright 2013-2014, Seth Vargo <sethvargo@gmail.com>
+# Copyright 2013-2015, Seth Vargo <sethvargo@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -110,6 +110,7 @@ class Chef
         node['platform_family'] == 'rhel'
       end
       alias_method :redhat?, :rhel?
+      alias_method :el?,     :rhel?
 
       #
       # Determine if the current node is a member of the slackware family.

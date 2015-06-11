@@ -1,5 +1,5 @@
 #
-# Copyright 2013-2014, Seth Vargo <sethvargo@gmail.com>
+# Copyright 2013-2015, Seth Vargo <sethvargo@gmail.com>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,12 +17,13 @@
 class Chef
   class Node
     class AttributeDoesNotExistError < StandardError
-      def initialize(keys)
+      def initialize(keys, key)
         hash = keys.map { |key| "['#{key}']" }
 
         super <<-EOH
 No attribute `node#{hash.join}' exists on
-the current node. Please make sure you have spelled everything correctly.
+the current node. Specifically the `#{key}' attribute is not
+defined. Please make sure you have spelled everything correctly.
 EOH
       end
     end
@@ -76,7 +77,7 @@ EOH
         if hash.key?(key)
           hash[key]
         else
-          raise AttributeDoesNotExistError.new(keys)
+          raise AttributeDoesNotExistError.new(keys, key)
         end
       end
     end
@@ -140,6 +141,9 @@ EOH
       instance_eval(&block)
       @current_namespace = current_namespace - keys
 
+      if @current_namespace.empty?
+        @namespace_options = nil
+      end
       nil
     end
 

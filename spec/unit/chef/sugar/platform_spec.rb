@@ -77,12 +77,12 @@ describe Chef::Sugar::Platform do
 
   describe '#redhat_enterprise_linux?' do
     it 'returns true when the platform is redhat enterprise linux' do
-      node = { 'platform' => 'enterprise' }
+      node = { 'platform' => 'redhat' }
       expect(described_class.redhat_enterprise_linux?(node)).to be true
     end
 
     it 'returns false when the platform is not redhat enterprise linux' do
-      node = { 'platform' => 'windows' }
+      node = { 'platform' => 'enterprise' }
       expect(described_class.redhat_enterprise_linux?(node)).to be false
     end
   end
@@ -267,6 +267,20 @@ describe Chef::Sugar::Platform do
       it 'returns false when the version is not less than the major' do
         node = { 'platform' => 'debian', 'platform_version' => '8.0' }
         expect(described_class.debian_before_wheezy?(node)).to be false
+      end
+    end
+
+    describe '#solaris_10?' do
+      it 'returns true when the version is 5.10' do
+        node = { 'platform' => 'solaris2', 'platform_version' => '5.10' }
+        expect(described_class.solaris_10?(node)).to be true
+      end
+    end
+
+    describe '#solaris_11?' do
+      it 'returns true when the version is 5.11' do
+        node = { 'platform' => 'solaris2', 'platform_version' => '5.11' }
+        expect(described_class.solaris_11?(node)).to be true
       end
     end
   end
