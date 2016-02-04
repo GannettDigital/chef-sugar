@@ -26,7 +26,7 @@ class Chef
       #
       def _64_bit?(node)
         %w(amd64 x86_64 ppc64 ppc64le s390x ia64 sparc64 aarch64 arch64 arm64 sun4v sun4u)
-          .include?(node['kernel']['machine'])
+          .include?(node['kernel']['machine']) || ( node['kernel']['bits'] == '64' )
       end
 
       #
@@ -88,6 +88,16 @@ class Chef
         %w(ppc64le)
           .include?(node['kernel']['machine'])
       end
+
+      #
+      # Determine if the current architecture is PowerPC
+      #
+      # @return [Boolean]
+      #
+      def powerpc?(node)
+        %w(powerpc)
+          .include?(node['kernel']['machine'])
+      end
     end
 
     module DSL
@@ -96,7 +106,9 @@ class Chef
 
       # @see Chef::Sugar::Architecture#_32_bit?
       def _32_bit?; Chef::Sugar::Architecture._32_bit?(node); end
-      alias_method :i386?, :_32_bit?
+
+      # @see Chef::Sugar::Architecture#intel?
+      def i386?; Chef::Sugar::Architecture.i386?(node); end
 
       # @see Chef::Sugar::Architecture#intel?
       def intel?; Chef::Sugar::Architecture.intel?(node); end
@@ -109,6 +121,9 @@ class Chef
 
       # @see Chef::Sugar::Architecture#ppc64le?
       def ppc64le?; Chef::Sugar::Architecture.ppc64le?(node); end
+
+      # @see Chef::Sugar::Architecture#powerpc?
+      def powerpc?; Chef::Sugar::Architecture.powerpc?(node); end
     end
   end
 end

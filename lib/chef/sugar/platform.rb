@@ -14,6 +14,8 @@
 # limitations under the License.
 #
 
+require_relative 'constraints'
+
 class Chef
   module Sugar
     module Platform
@@ -113,6 +115,17 @@ class Chef
       end
 
       #
+      # Determine if the current node is debian (platform, not platform_family).
+      #
+      # @param [Chef::Node] node
+      #
+      # @return [Boolean]
+      #
+      def debian_platform?(node)
+        node['platform'] == 'debian'
+      end
+
+      #
       # Determine if the current node is amazon linux.
       #
       # @param [Chef::Node] node
@@ -172,6 +185,17 @@ class Chef
       alias_method :redhat_enterprise?, :redhat_enterprise_linux?
 
       #
+      # Determine if the current node is fedora (platform, not platform_family).
+      #
+      # @param [Chef::Node] node
+      #
+      # @return [Boolean]
+      #
+      def fedora_platform?(node)
+        node['platform'] == 'fedora'
+      end
+
+      #
       # Determine if the current node is solaris2
       #
       # @param [Chef::Node] node
@@ -214,6 +238,51 @@ class Chef
       #
       def omnios?(node)
         node['platform'] == 'omnios'
+      end
+
+      #
+      # Determine if the current node is raspbian
+      #
+      # @param [Chef::Node] node
+      #
+      # @return [Boolean]
+      #
+      def raspbian?(node)
+        node['platform'] == 'raspbian'
+      end
+
+      #
+      # Determine if the current node is a Cisco nexus device
+      #
+      # @param [Chef::Node] node
+      #
+      # @return [Boolean]
+      #
+      def nexus?(node)
+        node['platform'] == 'nexus'
+      end
+
+      #
+      # Determine if the current node is a Cisco IOS-XR device
+      #
+      # @param [Chef::Node] node
+      #
+      # @return [Boolean]
+      #
+      def ios_xr?(node)
+        node['platform'] == 'ios_xr'
+      end
+
+      #
+      # Return the platform_version for the node. Acts like a String
+      # but also provides a mechanism for checking version constraints.
+      #
+      # @param [Chef::Node] node
+      #
+      # @return [Chef::Sugar::Constraints::Version]
+      #
+      def platform_version(node)
+        Chef::Sugar::Constraints::Version.new(node['platform_version'])
       end
     end
 
