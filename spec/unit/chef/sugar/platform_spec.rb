@@ -135,6 +135,49 @@ describe Chef::Sugar::Platform do
     end
   end
 
+  describe '#raspbian?' do
+    it 'returns true when platform is raspbian' do
+      node = { 'platform' => 'raspbian' }
+      expect(described_class.raspbian?(node)).to be true
+    end
+
+    it 'returns false when the platform is not raspbian' do
+      node = { 'platform' => 'windows' }
+      expect(described_class.raspbian?(node)).to be false
+    end
+  end
+
+  describe '#nexus' do
+    it 'returns true when the platform is nexus' do
+      node = { 'platform' => 'nexus' }
+      expect(described_class.nexus?(node)).to be true
+    end
+
+    it 'returns false when the platform is not nexus' do
+      node = { 'platform' => 'windows' }
+      expect(described_class.nexus?(node)).to be false
+    end
+  end
+
+  describe '#ios_xr' do
+    it 'returns true when the platform is ios_xr' do
+      node = { 'platform' => 'ios_xr' }
+      expect(described_class.ios_xr?(node)).to be true
+    end
+
+    it 'returns false when the platform is not ios_xr' do
+      node = { 'platform' => 'windows' }
+      expect(described_class.ios_xr?(node)).to be false
+    end
+  end
+
+  describe '#platform_version' do
+    it 'returns the platform version' do
+      node = { 'platform_version' => '1.2.3' }
+      expect(described_class.platform_version(node)).to eq('1.2.3')
+    end
+  end
+
   context 'dynamic matchers' do
     describe '#ubuntu_after_lucid?' do
       it 'returns true when the version is later than 10.04' do
